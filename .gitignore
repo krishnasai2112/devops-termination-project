@@ -3,3 +3,23 @@ app/venv/
 __pycache__/
 *.pyc
 .DS_Store
+# Local Python environments
+venv/
+**/venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+
+# Local backups
+*.backup
+*.pre-hpa-backup
+*.pre-ready-backup
+
+# macOS files
+.DS_Store
+
+# Local secrets
+.env
+.env.*
+*.pem
+*.key
