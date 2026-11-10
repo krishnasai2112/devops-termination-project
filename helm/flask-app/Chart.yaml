@@ -1,0 +1,6 @@
+apiVersion: v2
+name: flask-app
+description: Helm chart for a containerized Flask application with Kubernetes autoscaling and monitoring
+type: application
+version: 0.1.0
+appVersion: "v3"

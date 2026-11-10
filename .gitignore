@@ -23,3 +23,13 @@ __pycache__/
 .env.*
 *.pem
 *.key
+
+# Local backup files
+Dockerfile.pre-security-backup
+helm/flask-app-default-templates/
+*.pre-hpa-backup
+*.pre-ready-backup
+*.yaml.backup
+
+# macOS files
+.DS_Store

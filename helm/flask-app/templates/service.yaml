@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-service
+  labels:
+    app: {{ .Release.Name }}-app
+  {{- if .Values.monitoring.enabled }}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: {{ .Values.monitoring.path | quote }}
+    prometheus.io/port: {{ .Values.service.port | quote }}
+  {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: {{ .Release.Name }}-app
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      targetPort: 5000
+      protocol: TCP

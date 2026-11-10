@@ -1,0 +1,62 @@
+controller:
+  type: daemonset
+
+alloy:
+  configMap:
+    create: true
+    content: |
+      logging {
+        level = "info"
+      }
+
+      discovery.kubernetes "flask_pods" {
+        role = "pod"
+
+        namespaces {
+          names = ["default"]
+        }
+      }
+
+      discovery.relabel "flask_pods" {
+        targets = discovery.kubernetes.flask_pods.targets
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app"]
+          regex = "flask-demo-app"
+          action = "keep"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label = "namespace"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label = "pod"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label = "container"
+        }
+      }
+
+      loki.source.kubernetes "flask_logs" {
+        targets = discovery.relabel.flask_pods.output
+        forward_to = [loki.write.local.receiver]
+      }
+
+      loki.write "local" {
+        endpoint {
+          url = "http://loki-gateway.monitoring.svc.cluster.local/loki/api/v1/push"
+        }
+      }
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
